@@ -1,0 +1,69 @@
+---
+interface Horaire {
+  jour: string;
+  heures?: string;
+}
+
+interface Props {
+  horaires: Horaire[];
+  texteFerme?: string;
+}
+
+const { horaires, texteFerme = "Fermé" } = Astro.props;
+
+const numeros: Record<string, number> = {
+  dimanche: 0,
+  lundi: 1,
+  mardi: 2,
+  mercredi: 3,
+  jeudi: 4,
+  vendredi: 5,
+  samedi: 6,
+};
+---
+
+<ul class="horaires">
+  {horaires.map((h) => (
+    <li data-jour={numeros[h.jour.toLowerCase()]} class:list={{ ferme: !h.heures }}>
+      <span class="jour">{h.jour}</span>
+      <span>{h.heures ?? texteFerme}</span>
+    </li>
+  ))}
+</ul>
+
+<script>
+  const jour = new Date().getDay();
+  document
+    .querySelectorAll(`.horaires [data-jour="${jour}"]`)
+    .forEach((ligne) => ligne.classList.add("aujourdhui"));
+</script>
+
+<style>
+  .horaires {
+    list-style: none;
+    padding: 0;
+  }
+
+  .horaires li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+  }
+
+  .ferme {
+    opacity: 0.5;
+  }
+
+  .aujourdhui {
+    background: var(--creme);
+    color: var(--bordeaux);
+    font-weight: 500;
+  }
+
+  .aujourdhui .jour::after {
+    content: " · aujourd'hui";
+    font-size: 0.8rem;
+    font-weight: 400;
+  }
+</style>

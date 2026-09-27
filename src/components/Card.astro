@@ -1,0 +1,69 @@
+---
+interface Props {
+  titre: string;
+  prix: string;
+  description: string;
+  image: string;
+  lien?: string;
+}
+
+const { titre, prix, description, image, lien } = Astro.props;
+---
+
+<article class="card">
+  <img src={image} alt={titre} />
+  <div class="card-header">
+    <h3>{titre}</h3>
+    <p class="prix">{prix}</p>
+  </div>
+  <p class="description">{description}</p>
+  {lien && <a href={lien} class="card-lien lien">Commander →</a>}
+</article>
+
+<style>
+.card {
+  background: #fff;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(43, 34, 32, 0.08);
+}
+
+  .card img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 1rem 1.25rem 0.25rem;
+  }
+
+  .card-header h3 {
+    font-size: 1.25rem;
+  }
+
+  .prix {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .description {
+    padding: 0 1.25rem 1.25rem;
+    font-size: 0.95rem;
+  }
+
+  .card-lien {
+  display: inline-block;
+  font-size: 1rem;
+  margin: 0 1.25rem 1.25rem;
+  color: var(--bordeaux);
+  font-weight: 850;
+  text-decoration: underline;
+  text-decoration-color: var(--caramel);
+  text-underline-offset: 0.3em;
+}
+</style>

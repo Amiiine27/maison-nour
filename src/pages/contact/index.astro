@@ -1,0 +1,194 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { infos } from "../../data/infos";
+import Horaires from "../../components/Horaires.astro";
+import CarteGoogle from "../../components/CarteGoogle.astro";
+
+const adresseComplete = `${infos.adresse}, ${infos.codePostal} ${infos.ville}`;
+const lienItineraire = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(adresseComplete)}`;
+---
+
+<Layout
+  title="Contact"
+  description="Adresse, horaires et téléphone de Maison Nour, pâtisserie et salon de thé à Montreuil."
+>
+  <div class="conteneur">
+    <div class="intro">
+      <h1>Contact & horaires</h1>
+      <h3 class="accroche">
+        Le thé est chaud, <span>la vitrine est pleine.</span>
+      </h3>
+    </div>
+
+    <section class="contact">
+      <div class="infos">
+        <div class="bloc">
+          <h2>Adresse</h2>
+          <address>{infos.adresse} <br> {infos.codePostal} <br> {infos.ville}</address>
+          <a href={lienItineraire} target="_blank" rel="noopener" class="lien"
+            >Itinéraire →</a
+          >
+        </div>
+
+        <div class="bloc">
+          <h2>Téléphone</h2>
+          <a href={`tel:${infos.telephoneLien}`} class="telephone"
+            >{infos.telephone}</a
+          >
+        </div>
+
+        <div class="bloc">
+          <h2>Horaires</h2>
+          <Horaires horaires={infos.horaires} />
+        </div>
+
+        <div class="bloc">
+          <h2>Gâteau sur mesure</h2>
+          <p>Un anniversaire, une fête, une occasion spéciale ?</p>
+          <a href="/commande" class="lien">Faire une demande →</a>
+        </div>
+      </div>
+
+      <CarteGoogle adresse={adresseComplete} titre="Plan d'accès à Maison Nour" />
+    </section>
+
+    <section class="bandeau-insta">
+      <div>
+        <h2>Suivez nos fournées</h2>
+        <p>Nouveautés, créations du week-end et coulisses de l'atelier.</p>
+      </div>
+      <a href={infos.instagram} target="_blank" rel="noopener" class="btn"
+        >{infos.instagramPseudo}</a
+      >
+    </section>
+  </div>
+</Layout>
+
+<script>
+  const jour = new Date().getDay();
+  document
+    .querySelector(`.horaires [data-jour="${jour}"]`)
+    ?.classList.add("aujourdhui");
+</script>
+
+<style>
+  .contact {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 2rem;
+  }
+
+  .infos {
+    padding: 2.5rem 2rem;
+    background: #fff;
+    border-top: 4px solid var(--caramel);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(43, 34, 32, 0.06);
+  }
+
+  .bloc + .bloc {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(122, 46, 58, 0.12);
+  }
+
+  .bloc h2 {
+    margin-bottom: 0.75rem;
+    font-family: var(--font-texte);
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  address {
+    font-style: normal;
+    font-size: 1.15rem;
+  }
+
+
+  .telephone {
+    font-family: var(--font-titre);
+    font-size: 1.9rem;
+    font-weight: 600;
+    color: var(--creme);
+    text-decoration: none;
+    background-color: var(--bordeaux);
+    border-radius: 100;
+    padding: 0.4rem 0.3rem 0.3rem 0.4rem;
+  }
+
+  .telephone:hover {
+   color: var(--bordeaux);
+   background-color: var(--creme);
+   border: 2px solid var(--bordeaux);
+   border-style: ;
+  }
+
+  .horaires {
+    list-style: none;
+    padding: 0;
+  }
+
+  .horaires li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+  }
+
+  .horaires .ferme {
+    opacity: 0.5;
+  }
+
+  .horaires .aujourdhui {
+    background: var(--creme);
+    color: var(--bordeaux);
+    font-weight: 500;
+  }
+
+  .horaires .aujourdhui span:first-child::after {
+    content: " · aujourd'hui";
+    font-size: 0.8rem;
+    font-weight: 400;
+  }
+
+  .carte {
+    width: 100%;
+    height: 100%;
+    min-height: 24rem;
+    border: 0;
+    border-radius: 1rem;
+  }
+
+  .bandeau-insta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    padding: 2.5rem;
+    background: var(--sauge);
+    border-radius: 1rem;
+  }
+
+  .bandeau-insta h2 {
+    color: var(--texte);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .bandeau-insta .btn {
+    margin-top: 0;
+  }
+
+  @media (max-width: 768px) {
+    .contact {
+      grid-template-columns: 1fr;
+    }
+
+    .carte {
+      min-height: 18rem;
+    }
+  }
+</style>

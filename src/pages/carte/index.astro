@@ -1,0 +1,32 @@
+---
+import Layout from "../../layouts/Layout.astro"
+import { produits, accompagnements } from "../../data/produits";
+import Card from "../../components/Card.astro";
+---
+
+<Layout title="La carte">
+    <div class="conteneur">
+        <h1>La carte de pâtisseries chez Maison Nour</h1>
+
+        <section>
+            <h2 class="sous-titre">Les pâtisseries</h2>
+            <div class="grille">
+                {produits.map((p) => <Card {...p} />)}
+            </div>
+        </section>
+        
+        <section>
+            <h2 class="sous-titre">Les accompagnements</h2>
+            <div class="grille">
+                {accompagnements.map((p) => <Card {...p}/>)}
+            </div>
+        </section>
+        
+    </div>    
+</Layout>
+
+<style>
+    .sous-titre{
+        padding: 1.5rem 0 1.5rem 0;
+    }
+</style>

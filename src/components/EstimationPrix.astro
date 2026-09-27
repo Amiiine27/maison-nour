@@ -1,0 +1,99 @@
+<div class="estimation">
+  <p class="estimation-label">Estimation</p>
+  <p class="estimation-prix" aria-live="polite">—</p>
+  <p class="estimation-detail">Choisissez un nombre de parts pour voir le prix.</p>
+  <p class="estimation-note">Prix indicatif, confirmé par téléphone.</p>
+  <input type="hidden" name="estimation" value="" />
+</div>
+
+<script>
+  import { tarifs } from "../data/tarifs";
+
+  function formater(montant: number) {
+    return montant.toLocaleString("fr-FR", {
+      style: "currency",
+      currency: "EUR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>(".estimation").forEach((bloc) => {
+    const form = bloc.closest("form");
+    const prix = bloc.querySelector(".estimation-prix");
+    const detail = bloc.querySelector(".estimation-detail");
+    const champCache = bloc.querySelector<HTMLInputElement>('input[name="estimation"]');
+    if (!form || !prix || !detail || !champCache) return;
+
+    const calculer = () => {
+      const donnees = new FormData(form);
+      const parts = tarifs.parts.find((p) => p.label === donnees.get("parts"));
+
+      if (!parts) {
+        prix.textContent = "—";
+        detail.textContent = "Choisissez un nombre de parts pour voir le prix.";
+        champCache.value = "";
+        return;
+      }
+
+      let total = parts.prix;
+      const lignes = [`${parts.label} : ${formater(parts.prix)}`];
+
+      const parfum = tarifs.parfums.find((p) => p.label === donnees.get("parfum"));
+      if (parfum && parfum.supplement > 0) {
+        total += parfum.supplement;
+        lignes.push(`${parfum.label} : +${formater(parfum.supplement)}`);
+      }
+
+      const inscription = String(donnees.get("inscription") ?? "").trim();
+      if (inscription !== "") {
+        total += tarifs.inscription;
+        lignes.push(`Inscription : +${formater(tarifs.inscription)}`);
+      }
+
+      const texte = (parts.aPartirDe ? "À partir de " : "") + formater(total);
+      prix.textContent = texte;
+      detail.textContent = lignes.join(" · ");
+      champCache.value = texte;
+    };
+
+    form.addEventListener("input", calculer);
+    form.addEventListener("change", calculer);
+    form.addEventListener("reset", () => setTimeout(calculer));
+    calculer();
+  });
+</script>
+
+<style>
+  .estimation {
+    padding: 1.25rem 1.5rem;
+    background: var(--creme);
+    border-left: 4px solid var(--caramel);
+    border-radius: 0.8rem;
+  }
+
+  .estimation-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .estimation-prix {
+    font-family: var(--font-titre);
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--bordeaux);
+  }
+
+  .estimation-detail {
+    font-size: 0.9rem;
+  }
+
+  .estimation-note {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    font-style: italic;
+  }
+</style>

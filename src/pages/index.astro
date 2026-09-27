@@ -1,0 +1,90 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro";
+import { produits } from "../data/produits";
+
+const vedettes = produits.filter((p) => p.vedette);
+---
+
+<Layout title="Accueil">
+  <section class="hero">
+    <img class="hero-img" src="/images/grande-image.jpg" alt="Pâtisseries de Maison Nour" />
+    <div class="hero-content">
+      <h1>Pâtisserie franco-orientale à Montreuil</h1>
+      <p>Le meilleur des deux rives, fait maison chaque matin.</p>
+      <a href="/carte" class="btn">Voir la carte</a>
+    </div>
+  </section>
+
+  <section class="incontournables">
+    <h2>Nos incontournables</h2>
+    <div class="grille">
+      {vedettes.map((p) => <Card {...p} />)}
+    </div>
+    <a href="/carte" class="btn">Voir toute la carte</a>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    overflow: hidden;
+  }
+
+  .hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(43, 34, 32, 0.55);
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 40rem;
+    color: var(--creme);
+  }
+
+  .hero-content h1 {
+    color: var(--creme);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+
+  .btn:hover {
+    background: var(--bordeaux);
+    color: var(--creme);
+  }
+
+  .incontournables {
+    max-width: 70rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+    text-align: center;
+  }
+
+  .incontournables h2 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    margin-bottom: 2.5rem;
+  }
+
+  .btn {
+	font-size: 1.25rem;
+  }
+</style>

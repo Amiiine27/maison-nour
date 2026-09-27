@@ -1,0 +1,123 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { infos } from "../../data/infos";
+import { tarifs } from "../../data/tarifs";
+import FormulaireCommande from "../../components/FormulaireCommande.astro";
+
+const delaiJours = 2;
+---
+
+<Layout
+  title="Commander un gâteau"
+  description="Commandez votre gâteau d'anniversaire sur mesure chez Maison Nour, pâtisserie franco-orientale à Montreuil."
+>
+  <div class="conteneur">
+    <div class="intro">
+      <p class="surtitre">Sur commande</p>
+      <h1>Votre gâteau d'anniversaire</h1>
+      <p class="accroche">
+        Racontez-nous votre fête, <span>on s'occupe du reste.</span>
+      </p>
+    </div>
+
+    <section class="commande">
+      <div>
+        <ol class="etapes">
+          <li>
+            <span class="numero">01</span>
+            <div>
+              <h2>Vous décrivez votre gâteau</h2>
+              <p>Parfum, nombre de parts, décor, inscription.</p>
+            </div>
+          </li>
+          <li>
+            <span class="numero">02</span>
+            <div>
+              <h2>Nour vous rappelle sous 24h</h2>
+              <p>Pour affiner vos envies et confirmer le prix.</p>
+            </div>
+          </li>
+          <li>
+            <span class="numero">03</span>
+            <div>
+              <h2>Vous le récupérez en boutique</h2>
+              <p>Au moins {delaiJours * 24}h après votre demande.</p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="prix-indicatif">
+          <p>À partir de</p>
+          <strong>{tarifs.parts[0].prix} €</strong>
+          <p>pour {tarifs.parts[0].label}</p>
+        </div>
+      </div>
+
+      <FormulaireCommande
+        action="https://formspree.io/f/VOTRE_ID"
+        telephone={infos.telephone}
+        delaiJours={delaiJours}
+      />
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .commande {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  /* Étapes */
+  .etapes {
+    list-style: none;
+    padding: 0;
+  }
+
+  .etapes li {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .etapes li + li {
+    margin-top: 1.75rem;
+  }
+
+  .etapes .numero {
+    min-width: 2.5rem;
+    font-family: var(--font-titre);
+    font-style: italic;
+    font-size: 2.25rem;
+    line-height: 1;
+    color: var(--caramel);
+  }
+
+  .etapes h2 {
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
+  }
+
+  /* Prix indicatif */
+  .prix-indicatif {
+    margin-top: 2.5rem;
+    padding: 1.5rem 1.75rem;
+    background: var(--bordeaux);
+    color: var(--creme);
+    border-radius: 1rem;
+  }
+
+  .prix-indicatif strong {
+    display: block;
+    font-family: var(--font-titre);
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+
+  @media (max-width: 768px) {
+    .commande {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

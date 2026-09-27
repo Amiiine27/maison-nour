@@ -1,0 +1,311 @@
+---
+import { tarifs } from "../data/tarifs";
+import EstimationPrix from "./EstimationPrix.astro";
+
+interface Props {
+  action: string;
+  telephone: string;
+  delaiJours?: number;
+}
+
+const { action, telephone, delaiJours = 2 } = Astro.props;
+---
+
+<form
+  class="formulaire"
+  action={action}
+  method="POST"
+  data-telephone={telephone}
+  data-delai={delaiJours}
+>
+  <p class="mention">Les champs marqués d'un <span class="etoile">*</span> sont obligatoires.</p>
+
+  <div class="champ">
+    <label for="nom">Nom et prénom</label>
+    <input id="nom" name="nom" type="text" autocomplete="name" required />
+  </div>
+
+  <div class="ligne">
+    <div class="champ">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="email" required />
+    </div>
+    <div class="champ">
+      <label for="telephone">Téléphone</label>
+      <input id="telephone" name="telephone" type="tel" autocomplete="tel" required />
+    </div>
+  </div>
+
+  <div class="ligne">
+    <div class="champ">
+      <label for="date">Date de retrait</label>
+      <input id="date" name="date_retrait" type="date" required />
+    </div>
+    <div class="champ">
+      <label for="parts">Nombre de parts</label>
+      <select id="parts" name="parts" required>
+        <option value="">Choisir</option>
+        {tarifs.parts.map((p) => <option value={p.label}>{p.label}</option>)}
+      </select>
+    </div>
+  </div>
+
+  <fieldset class="champ">
+    <legend>Parfum</legend>
+    <div class="choix">
+      {tarifs.parfums.map((p) => (
+        <label class="pastille">
+          <input type="radio" name="parfum" value={p.label} required />
+          <span>{p.label}{p.supplement > 0 && ` +${p.supplement} €`}</span>
+        </label>
+      ))}
+    </div>
+  </fieldset>
+
+  <div class="champ">
+    <label for="inscription">Inscription sur le gâteau <span class="optionnel">(facultatif)</span></label>
+    <input id="inscription" name="inscription" type="text" maxlength="40" placeholder="Joyeux anniversaire Léa !" />
+  </div>
+
+  <div class="champ">
+    <label for="message">Vos envies <span class="optionnel">(facultatif)</span></label>
+    <textarea id="message" name="message" rows="4" placeholder="Thème, couleurs, allergies à signaler..."></textarea>
+  </div>
+
+  <EstimationPrix />
+
+  <input type="text" name="_gotcha" class="piege" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+  <label class="consentement">
+    <input type="checkbox" name="consentement" required />
+    <span>J'accepte que mes informations soient utilisées pour traiter ma commande.</span>
+  </label>
+
+  <button type="submit" class="btn">Envoyer ma demande</button>
+  <p class="statut" role="status"></p>
+</form>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>(".formulaire").forEach((form) => {
+    const delai = Number(form.dataset.delai ?? 2);
+    const telephone = form.dataset.telephone ?? "";
+    const champDate = form.querySelector<HTMLInputElement>('input[type="date"]');
+    const statut = form.querySelector<HTMLElement>(".statut");
+    const bouton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+    // Date minimum de retrait
+    if (champDate) {
+      const min = new Date();
+      min.setDate(min.getDate() + delai);
+      const annee = min.getFullYear();
+      const mois = String(min.getMonth() + 1).padStart(2, "0");
+      const jour = String(min.getDate()).padStart(2, "0");
+      champDate.min = `${annee}-${mois}-${jour}`;
+    }
+
+    if (!statut || !bouton) return;
+
+    // Envoi sans quitter la page
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      bouton.disabled = true;
+      statut.className = "statut";
+      statut.textContent = "Envoi en cours...";
+
+      try {
+        const reponse = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        if (!reponse.ok) throw new Error();
+        form.reset();
+        statut.textContent = "Merci ! Nous vous rappelons sous 24h pour confirmer votre commande.";
+        statut.classList.add("succes");
+      } catch {
+        statut.textContent = `Oups, l'envoi a échoué. Appelez-nous au ${telephone}.`;
+        statut.classList.add("erreur");
+      } finally {
+        bouton.disabled = false;
+      }
+    });
+  });
+</script>
+
+<style>
+  .formulaire {
+    display: grid;
+    gap: 1.25rem;
+    padding: 2.5rem 2rem;
+    background: #fff;
+    border-top: 4px solid var(--sauge);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(43, 34, 32, 0.06);
+  }
+
+  .ligne {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .champ {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  fieldset {
+    border: 0;
+    padding: 0;
+  }
+
+  label,
+  legend {
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .optionnel {
+    font-weight: 400;
+    opacity: 0.7;
+  }
+
+  /* Astérisques */
+  .mention {
+    font-size: 0.85rem;
+  }
+
+  .etoile,
+  .champ:has(:required) > label::after,
+  .champ:has(:required) > legend::after,
+  .consentement:has(:required) span::after {
+    color: #c0392b;
+    font-weight: 600;
+  }
+
+  .champ:has(:required) > label::after,
+  .champ:has(:required) > legend::after,
+  .consentement:has(:required) span::after {
+    content: " *";
+  }
+
+  /* Champs */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="date"],
+  select,
+  textarea {
+    padding: 0.75rem 1rem;
+    font: inherit;
+    color: var(--texte);
+    background: var(--creme);
+    border: 1px solid rgba(43, 34, 32, 0.2);
+    border-radius: 0.6rem;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: 2px solid var(--caramel);
+    outline-offset: 1px;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  /* Pastilles de parfum */
+  .choix {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .pastille {
+    position: relative;
+    font-weight: 400;
+  }
+
+  .pastille input {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .pastille span {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(122, 46, 58, 0.3);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .pastille input:checked + span {
+    background: var(--bordeaux);
+    border-color: var(--bordeaux);
+    color: var(--creme);
+  }
+
+  .pastille input:focus-visible + span {
+    outline: 2px solid var(--caramel);
+    outline-offset: 2px;
+  }
+
+  /* Consentement, anti-spam, bouton */
+  .consentement {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .consentement input {
+    margin-top: 0.3rem;
+    accent-color: var(--bordeaux);
+  }
+
+  .piege {
+    position: absolute;
+    left: -9999px;
+  }
+
+  .btn {
+    justify-self: start;
+    margin-top: 0.5rem;
+    border: 0;
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+
+  /* Messages */
+  .statut.succes,
+  .statut.erreur {
+    padding: 1rem;
+    border-radius: 0.6rem;
+  }
+
+  .statut.succes {
+    background: var(--sauge);
+  }
+
+  .statut.erreur {
+    background: var(--bordeaux);
+    color: var(--creme);
+  }
+
+  @media (max-width: 768px) {
+    .ligne {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

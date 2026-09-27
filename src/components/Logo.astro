@@ -1,0 +1,13 @@
+---
+interface Props {
+  size?: number;
+}
+const { size = 64 } = Astro.props;
+---
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width={size} height={size} role="img" aria-label="Maison Nour">
+  <circle cx="100" cy="100" r="96" fill="#F4EBDD" stroke="#7A2E3A" stroke-width="4"/>
+  <text x="100" y="92" text-anchor="middle" font-family="Fraunces, serif" font-size="34" font-style="italic" fill="#7A2E3A">Maison</text>
+  <text x="100" y="130" text-anchor="middle" font-family="Fraunces, serif" font-size="40" font-weight="600" fill="#7A2E3A">Nour</text>
+  <text x="100" y="152" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9" letter-spacing="1" fill="#C98B4B">PÂTISSERIE · MONTREUIL</text>
+</svg>

@@ -1,0 +1,150 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { infos } from "../../data/infos";
+
+const miseAJour = "septembre 2026";
+---
+
+<Layout
+  title="Mentions légales"
+  description="Mentions légales et politique de confidentialité du site de Maison Nour."
+>
+  <div class="conteneur">
+    <div class="legal">
+      <h1>Mentions légales</h1>
+
+      <h2>Éditeur du site</h2>
+      <p>
+        Maison Nour, <span class="a-completer"
+          >forme juridique (EI, SARL au capital de ... €)</span
+        ><br />
+        {infos.adresse}, {infos.codePostal}
+        {infos.ville}<br />
+        SIRET : <span class="a-completer">à compléter</span><br />
+        Immatriculation : <span class="a-completer"
+          >Répertoire des métiers ou RCS de ...</span
+        ><br />
+        Téléphone : {infos.telephone}<br />
+        Email : <a href={`mailto:${infos.email}`}>{infos.email}</a>
+      </p>
+      <p>Directrice de la publication : Nour Benali.</p>
+
+      <h2>Hébergement</h2>
+      <p>
+        <span class="a-completer"
+          >Nom de l'hébergeur, adresse et téléphone (dépend de la mise en ligne)</span
+        >
+      </p>
+
+      <h2>Conception et réalisation</h2>
+      <p>Site conçu et réalisé par <a href="https://enymia.fr">Enymia</a>.</p>
+
+      <h2>Propriété intellectuelle</h2>
+      <p>
+        Les textes, photographies et le logo de ce site sont la propriété de
+        Maison Nour, sauf mention contraire. Toute reproduction sans
+        autorisation est interdite.
+      </p>
+      <p>
+        Crédits photos : <span class="a-completer"
+          >nom du photographe ou « Unsplash »</span
+        >.
+      </p>
+
+      <h2>Données personnelles</h2>
+      <p>
+        Le formulaire de commande collecte votre nom, votre email, votre
+        téléphone et les détails de votre commande. Ces informations servent
+        uniquement à traiter votre demande et à vous recontacter pour la
+        confirmer.
+      </p>
+      <ul>
+        <li>
+          <strong>Responsable du traitement :</strong> Maison Nour, à l'adresse ci-dessus.
+        </li>
+        <li>
+          <strong>Base légale :</strong> les mesures précontractuelles prises à votre
+          demande.
+        </li>
+        <li>
+          <strong>Destinataire :</strong> Maison Nour uniquement. Les messages transitent
+          par Formspree, prestataire d'envoi de formulaires établi aux États-Unis
+          <span class="a-completer"
+            >(garanties de transfert à vérifier dans la politique de Formspree)</span
+          >.
+        </li>
+        <li>
+          <strong>Durée de conservation :</strong>
+          <span class="a-completer"
+            >par exemple 12 mois après la dernière commande</span
+          >.
+        </li>
+      </ul>
+      <p>
+        Vous pouvez demander à accéder à vos données, les rectifier ou les
+        supprimer, ou vous opposer à leur utilisation, en écrivant à <a
+          href={`mailto:${infos.email}`}>{infos.email}</a
+        >. Vous pouvez aussi adresser une réclamation à la CNIL (<a
+          href="https://www.cnil.fr">cnil.fr</a
+        >).
+      </p>
+
+      <h2>Cookies</h2>
+      <p>
+        Ce site n'utilise aucun cookie de mesure d'audience ni de publicité. Les
+        polices de caractères sont hébergées directement sur le site, sans
+        connexion à un service tiers.
+      </p>
+      <p>
+        La page contact propose une carte Google Maps. Elle ne se charge que si
+        vous cliquez sur « Afficher la carte ». Google peut alors déposer des
+        cookies, régis par sa propre politique de confidentialité.
+      </p>
+
+      <p class="maj">Dernière mise à jour : {miseAJour}.</p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .legal {
+    max-width: 46rem;
+    margin: 0 auto;
+  }
+
+  .legal h2 {
+    margin: 2.5rem 0 0.75rem;
+    font-size: 1.5rem;
+  }
+
+  .legal p + p,
+  .legal ul {
+    margin-top: 0.75rem;
+  }
+
+  .legal ul {
+    padding-left: 1.25rem;
+  }
+
+  .legal li + li {
+    margin-top: 0.35rem;
+  }
+
+  .legal a {
+    color: var(--bordeaux);
+    text-decoration-color: var(--caramel);
+    text-underline-offset: 0.2em;
+  }
+
+  .a-completer {
+    padding: 0 0.3rem;
+    background: rgba(201, 139, 75, 0.25);
+    border-radius: 0.25rem;
+  }
+
+  .maj {
+    margin-top: 3rem;
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+</style>
